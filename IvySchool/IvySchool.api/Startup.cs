@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IvySchool.Data.Entities;
+using IvySchool.Data.Repositories;
+using IvySchool.Domain.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +48,10 @@ namespace IvySchool.api
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
+
+            services.AddScoped<IIvySchoolRepository>(provider => new IvySchoolRepository(provider.GetService<IvySchoolContext>()));
+            services.AddScoped<IUserService>(provider => new UserService(provider.GetService<IIvySchoolRepository>()));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +79,10 @@ namespace IvySchool.api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ivy School API V1");
             });
+
+            app
+                .UseCors(options =>
+                    options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseMvc();
         }

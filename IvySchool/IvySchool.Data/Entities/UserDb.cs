@@ -7,7 +7,7 @@ namespace IvySchool.Data.Entities
 {
      public class UserDb
     {
-        public int Id  { get; set; }
+        public int UserId  { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -16,6 +16,7 @@ namespace IvySchool.Data.Entities
         public string Password { get; set; }
         public bool IsDeleted  { get; set; }
         public DateTime CreateAt { get; set; }
+        public List<RoleUserDb> RoleUsers { get; set; }
 
     }
 }

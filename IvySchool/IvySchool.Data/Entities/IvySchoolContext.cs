@@ -12,10 +12,16 @@ namespace IvySchool.Data.Entities
         }
 
         public DbSet<UserDb> Users { get; set; }
+        public DbSet< RoleUserDb> RoleUsers{ get; set; }
+        public DbSet<RoleDb> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserDb>().ToTable("User");
+            modelBuilder.Entity<UserDb>().ToTable("User").HasKey(u => u.UserId);
+            modelBuilder.Entity<RoleDb>().ToTable("Role").HasKey(r => r.RoleId);
+            modelBuilder.Entity<RoleUserDb>().HasKey(s => new { s.RoleId, s.UserId });
+            
+
         }
     }
 }

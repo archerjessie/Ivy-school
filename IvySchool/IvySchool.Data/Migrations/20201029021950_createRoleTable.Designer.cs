@@ -3,15 +3,17 @@ using System;
 using IvySchool.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IvySchool.Data.Migrations
 {
     [DbContext(typeof(IvySchoolContext))]
-    partial class IvySchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20201029021950_createRoleTable")]
+    partial class createRoleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,11 +33,13 @@ namespace IvySchool.Data.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("IvySchool.Data.Entities.RoleUserDb", b =>
+            modelBuilder.Entity("IvySchool.Data.Entities.RoleUser", b =>
                 {
                     b.Property<int>("RoleId");
 
                     b.Property<int>("UserId");
+
+                    b.Property<int>("RoleUserId");
 
                     b.HasKey("RoleId", "UserId");
 
@@ -67,15 +71,15 @@ namespace IvySchool.Data.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("IvySchool.Data.Entities.RoleUserDb", b =>
+            modelBuilder.Entity("IvySchool.Data.Entities.RoleUser", b =>
                 {
                     b.HasOne("IvySchool.Data.Entities.RoleDb", "Role")
-                        .WithMany("RoleUsers")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IvySchool.Data.Entities.UserDb", "User")
-                        .WithMany("RoleUsers")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
