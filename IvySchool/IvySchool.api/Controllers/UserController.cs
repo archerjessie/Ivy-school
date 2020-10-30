@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IvySchool.api.Controllers
 {
+    /// <summary>
+    /// Apis for user management.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -19,8 +22,12 @@ namespace IvySchool.api.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Create a user and assign a proper role
+        /// </summary>
+        /// <param name="user">the user object</param>
+        /// <returns>Json object indicate whether it is successful.</returns>
         [HttpPost]
-        
         public IActionResult CreateUser([FromBody] User user)
         { 
 

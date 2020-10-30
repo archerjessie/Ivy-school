@@ -6,8 +6,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.1-stretch AS build
 WORKDIR /src
-COPY ["IvySchool.api/IvySchool.api.csproj", "IvySchool.api/"]
-RUN dotnet restore "IvySchool.api/IvySchool.api.csproj"
+COPY ./**/*.csproj ./
+RUN dotnet restore "IvySchool.api.csproj"
 COPY . .
 WORKDIR "/src/IvySchool.api"
 RUN dotnet build "IvySchool.api.csproj" -c Release -o /app/build
