@@ -28,10 +28,10 @@ namespace IvySchool.api.Controllers
         /// <param name="user">the user object</param>
         /// <returns>Json object indicate whether it is successful.</returns>
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUserAsync([FromBody] User user)
         { 
 
-            var response= _userService.CreateUser(user);
+            var response= await _userService.CreateUserAsync(user);
             return Ok(response);
         }
 

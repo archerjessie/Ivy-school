@@ -7,7 +7,7 @@ namespace IvySchool.Domain.Services
 {
     public interface IUserService
     {
-        Task<SimpleResponseObject> CreateUser(User user);
+        Task<SimpleResponseObject> CreateUserAsync(User user);
     }
 
 }

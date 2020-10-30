@@ -15,7 +15,7 @@ namespace IvySchool.Data.Repositories
             _context = context;
         }
 
-        public async Task CreateUser(UserDb user, RoleDb role)
+        public async Task CreateUserAsync(UserDb user, RoleDb role)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {

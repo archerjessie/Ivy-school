@@ -8,7 +8,7 @@ namespace IvySchool.Data.Repositories
     public interface IIvySchoolRepository
     {
       
-        Task CreateUser(UserDb user, RoleDb role);
+        Task CreateUserAsync(UserDb user, RoleDb role);
         Task<bool> UpdateUser(UserDb user);
         IQueryable<UserDb> GetAllActiveUsers();
         Task<UserDb> GetUserByEmail(string email);

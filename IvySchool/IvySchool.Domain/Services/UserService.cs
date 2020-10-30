@@ -21,7 +21,7 @@ namespace IvySchool.Domain.Services
             _ivySchoolRepository = ivySchoolRepository;
         }
 
-        public async Task<SimpleResponseObject> CreateUser(User user)
+        public async Task<SimpleResponseObject> CreateUserAsync(User user)
         {
             if (string.IsNullOrEmpty(user.Name))
             {
@@ -53,7 +53,10 @@ namespace IvySchool.Domain.Services
                 }
                 else
                 {
-                    await _ivySchoolRepository.CreateUser(user.ToUserDb(), role);
+                    var userDb = user.ToUserDb();
+                    userDb.CreateAt = DateTime.Now;
+                    userDb.IsDeleted = false;
+                    await _ivySchoolRepository.CreateUserAsync(userDb, role);
                 }
 
 

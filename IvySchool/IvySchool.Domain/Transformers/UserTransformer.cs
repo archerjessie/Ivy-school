@@ -11,12 +11,11 @@ namespace IvySchool.Domain.Transformers
             UserDb userDb = new UserDb()
             {
                 UserId = user.UserId,
+                Name=user.Name,
                 Email = user.Email,
                 Password = user.Password,
                 IsDeleted = user.IsDeleted,
                 CreateAt = user.CreateAt,
-
-
             };
             return userDb;
         }
