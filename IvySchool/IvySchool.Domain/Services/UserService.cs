@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -8,69 +10,73 @@ using IvySchool.Data.Repositories;
 using IvySchool.Domain.Models;
 using IvySchool.Domain.Responses;
 using IvySchool.Domain.Transformers;
+using Microsoft.EntityFrameworkCore;
 
 namespace IvySchool.Domain.Services
 {
-   
+
     public class UserService : IUserService
-    { 
+    {
         private readonly IIvySchoolRepository _ivySchoolRepository;
-    
+
         public UserService(IIvySchoolRepository ivySchoolRepository)
         {
             _ivySchoolRepository = ivySchoolRepository;
         }
 
-        public async Task<SimpleResponseObject> CreateUserAsync(User user)
+        public async Task<SimpleResponse> CreateUserAsync(string email, string name, string password, int roleId)
         {
-            if (string.IsNullOrEmpty(user.Name))
+            if (string.IsNullOrEmpty(name))
             {
-                return SimpleResponseObject.Error("Name cannot be empty");
+                return SimpleResponse.Error("Name cannot be empty");
             }
 
-            if (string.IsNullOrEmpty(user.Email)|| !IsEmailValid(user.Email))
+            if (string.IsNullOrEmpty(email) || !IsEmailValid(email))
             {
-                return SimpleResponseObject.Error("Invalid Email format.");
+                return SimpleResponse.Error("Invalid Email format.");
             }
 
             try
             {
-                RoleDb role = await _ivySchoolRepository.GetRoleById(user.RoleId);
-                if(role == null)
+                RoleDb role = await _ivySchoolRepository.GetRoleById(roleId);
+                if (role == null)
                 {
-                    return SimpleResponseObject.Error("Invalid role id.");
+                    return SimpleResponse.Error("Invalid role id.");
                 }
-              
-                
-                    UserDb user1 = await _ivySchoolRepository.GetUserByEmail(user.Email);
+
+
+                UserDb user1 = await _ivySchoolRepository.GetUserByEmail(email);
                 if (user1 != null)
                 {
-                    if (user1.RoleUsers.Any(u => u.RoleId == user.RoleId))
+                    if (user1.RoleUsers.Any(u => u.RoleId == roleId))
                     {
-                        return SimpleResponseObject.Error("User already exists.");
+                        return SimpleResponse.Error("User already exists.");
                     }
-                    await _ivySchoolRepository.AssignRoleToUser(user.ToUserDb(), user.RoleId);
+                    await _ivySchoolRepository.AssignRoleToUser(user1, roleId);
                 }
                 else
                 {
-                    var userDb = user.ToUserDb();
-                    userDb.CreateAt = DateTime.Now;
-                    userDb.IsDeleted = false;
-                    await _ivySchoolRepository.CreateUserAsync(userDb, role);
+                    UserDb user2 = new UserDb()
+                    {
+                        Name = name,
+                        Email = email,
+                        Password = password,
+                        CreateAt = DateTime.Now,
+                        IsDeleted = false,
+                    };
+                    await _ivySchoolRepository.CreateUserAsync(user2, role);
                 }
-
-
             }
-            catch(DBOperationException ex)
+            catch (DBOperationException ex)
             {
-                return SimpleResponseObject.Error(ex.Message);
+                return SimpleResponse.Error(ex.Message);
             }
 
-           
 
-            return SimpleResponseObject.Success();
+
+            return SimpleResponse.Success();
         }
-       
+
 
         private bool IsEmailValid(string emailaddress)
         {
@@ -85,6 +91,33 @@ namespace IvySchool.Domain.Services
             }
         }
 
+        public async Task<ObjectResponse<User>> LoginUserAsync(string email, string password)
+        {
+
+            UserDb user = await _ivySchoolRepository.GetAllActiveUsers().FirstOrDefaultAsync(e => e.Email == email && e.Password == password);
+            if (user == null)
+            {
+                return ObjectResponse<User>.Error("The user does not exist.");
+            }
+            return ObjectResponse<User>.Success(new User(user.Email, user.Name, user.CreateAt, user.RoleUsers));
+
+        }
+
+        public async Task<ObjectResponse<IEnumerable<User>>> GetAdminRole()
+        {
+            try
+            {
+                var admins = await _ivySchoolRepository.GetAllActiveUsers()
+                    .Where(u => u.RoleUsers.Any(ru => ru.Role.Role == "Admin"))
+                    .Select(u=>u.ToUser())
+                    .ToListAsync();
+                return ObjectResponse<IEnumerable<User>>.Success(admins);
+            }
+            catch (Exception ex)
+            {
+                return ObjectResponse<IEnumerable<User>>.Error(ex.Message);
+            }
+        }
 
     }
 }

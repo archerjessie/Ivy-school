@@ -31,6 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Repositories\" />
-    <Folder Include="Entities\Exceptions\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using IvySchool.Data.Entities;
@@ -43,7 +44,10 @@ namespace IvySchool.Data.Repositories
 
         public IQueryable<UserDb> GetAllActiveUsers()
         {
-            return _context.Users.Where(u=>!u.IsDeleted);
+            return _context.Users
+                .Include(user => user.RoleUsers)
+                .ThenInclude(userRole => userRole.Role)
+                .Where(u=>!u.IsDeleted);
         }
 
         public async Task<RoleDb> GetRoleById(int roleId)
@@ -77,6 +81,8 @@ namespace IvySchool.Data.Repositories
                 }
             }
         }
+
+ 
 
         public async Task<bool> UpdateUser(UserDb user)
         {

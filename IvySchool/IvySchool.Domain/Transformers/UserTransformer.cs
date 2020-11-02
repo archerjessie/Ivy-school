@@ -6,19 +6,14 @@ namespace IvySchool.Domain.Transformers
 {
     public static class UserTransformer
     {
-        public static UserDb ToUserDb(this User user)
+        public static User ToUser(this UserDb userDb)
         {
-            UserDb userDb = new UserDb()
-            {
-                UserId = user.UserId,
-                Name=user.Name,
-                Email = user.Email,
-                Password = user.Password,
-                IsDeleted = user.IsDeleted,
-                CreateAt = user.CreateAt,
-            };
-            return userDb;
+            User user = new User(userDb.Email, userDb.Name, userDb.CreateAt, userDb.RoleUsers);
+
+            return user;
         }
+       
+            
     }
 }
     
