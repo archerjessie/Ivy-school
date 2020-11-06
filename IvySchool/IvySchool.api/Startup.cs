@@ -51,6 +51,7 @@ namespace IvySchool.api
 
             services.AddScoped<IIvySchoolRepository>(provider => new IvySchoolRepository(provider.GetService<IvySchoolContext>()));
             services.AddScoped<IUserService>(provider => new UserService(provider.GetService<IIvySchoolRepository>()));
+            services.AddScoped<IStudentService>(provider => new StudentService(provider.GetService<IIvySchoolRepository>()));
 
         }
 

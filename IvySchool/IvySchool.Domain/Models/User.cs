@@ -14,11 +14,15 @@ namespace IvySchool.Domain.Models
             CreateAt = createAt;
             Roles = roles.Select(r=>r.Role.Role.ToString()).ToList();
             
+           
+            
         }
 
         public string Email { get; private set; }
         public string Name{ get;private set; }
         public DateTime CreateAt { get; private set; }
         public List<string> Roles { get; private set; }
+        
+        
     }
 }

@@ -30,13 +30,13 @@ namespace IvySchool.api.Controllers
         /// <returns>Json object indicate whether it is successful.</returns>
 
         [HttpGet("admin")]
-        public async Task<IActionResult> GetAdminRole()
+        public async Task<IActionResult> GetAdministrators()
         {
 
-            var response = await _userService.GetAdminRole();
+            var response = await _userService.GetAdministrators();
             return Ok(response);
         }
-    
+
 
         [HttpPost]
         public async Task<IActionResult> CreateUserAsync([FromBody] UserRegistration user)
@@ -50,7 +50,7 @@ namespace IvySchool.api.Controllers
         public async Task<IActionResult> LogInUser([FromBody]LoginRequest logInForm)
         {
 
-            var response = await _userService.LoginUserAsync(logInForm.Email,logInForm.Password);
+            var response = await _userService.LoginUserAsync(logInForm.Email,logInForm.Password, HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
             return Ok(response);
         }
 

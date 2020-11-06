@@ -23,7 +23,6 @@ namespace IvySchool.Data.Entities
             //builder.UseSqlServer(connectionString);
             var connectionString = configuration.GetConnectionString("IvySchoolConnectionString");
             builder.UseNpgsql(connectionString);
-
             return new IvySchoolContext(builder.Options);
         }
     }

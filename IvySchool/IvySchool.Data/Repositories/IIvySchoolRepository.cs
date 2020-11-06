@@ -13,7 +13,9 @@ namespace IvySchool.Data.Repositories
         IQueryable<UserDb> GetAllActiveUsers();
         Task<UserDb> GetUserByEmail(string email);
         Task<RoleDb> GetRoleById(int id);
-        Task AssignRoleToUser(UserDb user, int roleId);
+        Task AssignRoleToUser(UserDb user, RoleDb role);
+        Task AddSignIn(SigninHistoryDb signin);
+        IQueryable<StudentDb> GetStudents();
 
 
     }

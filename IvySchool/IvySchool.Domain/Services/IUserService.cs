@@ -9,8 +9,8 @@ namespace IvySchool.Domain.Services
     public interface IUserService
     {
         Task<SimpleResponse> CreateUserAsync(string email, string name, string password, int roleId);
-        Task<ObjectResponse<User>> LoginUserAsync(string email, string password);
-        Task<ObjectResponse<IEnumerable<User>>> GetAdminRole();
+        Task<ObjectResponse<User>> LoginUserAsync(string email, string password, string signinIp);
+        Task<ObjectResponse<IEnumerable<User>>> GetAdministrators();
     }
 
 }

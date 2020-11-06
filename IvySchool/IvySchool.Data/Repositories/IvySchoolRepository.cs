@@ -16,29 +16,20 @@ namespace IvySchool.Data.Repositories
             _context = context;
         }
 
+        #region UserDB
         public async Task CreateUserAsync(UserDb user, RoleDb role)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            _context.Add(user);
+            ProcessUserRole(user,role);
+
+            try
             {
-                _context.Add(user);
-                RoleUserDb roleUser = new RoleUserDb()
-                {
-                    User = user,
-                    RoleId = role.RoleId
-                };
-                _context.Add(roleUser);
+                await _context.SaveChangesAsync();
 
-                try
-                {
-                    await _context.SaveChangesAsync();
-
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new DBOperationException(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                throw new DBOperationException(ex);
             }
         }
 
@@ -47,7 +38,14 @@ namespace IvySchool.Data.Repositories
             return _context.Users
                 .Include(user => user.RoleUsers)
                 .ThenInclude(userRole => userRole.Role)
-                .Where(u=>!u.IsDeleted);
+                .Where(u => !u.IsDeleted);
+        }
+        public IQueryable<StudentDb> GetStudents()
+        {
+            return _context.Students
+                .Include(s => s.User)
+                .ThenInclude(u => u.SignIns)
+                .Where(u => u.User != null && !u.User.IsDeleted);
         }
 
         public async Task<RoleDb> GetRoleById(int roleId)
@@ -57,32 +55,39 @@ namespace IvySchool.Data.Repositories
 
         public async Task<UserDb> GetUserByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            return await _context.Users.Include(user=>user.RoleUsers).FirstOrDefaultAsync(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task AssignRoleToUser(UserDb user, int roleId)
+        public async Task AssignRoleToUser(UserDb user, RoleDb role)
         {
-           
-            {
-                RoleUserDb roleUser = new RoleUserDb()
-                {
-                    UserId = user.UserId,
-                    RoleId = roleId,
-                };
-                _context.Add(roleUser);
+            ProcessUserRole(user, role);
 
-                try
-                {
-                    await _context.SaveChangesAsync();   
-                }
-                catch (Exception ex)
-                {
-                    throw new DBOperationException(ex);
-                }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new DBOperationException(ex);
             }
         }
 
- 
+        private void ProcessUserRole(UserDb user, RoleDb role)
+        {
+            RoleUserDb roleUser = new RoleUserDb()
+            {
+                User = user,
+                Role = role
+            };
+            _context.Add(roleUser);
+            if (role.Role == "Student")
+            {
+                _context.Add(new StudentDb()
+                {
+                    User = user
+                });
+            }
+        }
 
         public async Task<bool> UpdateUser(UserDb user)
         {
@@ -109,7 +114,24 @@ namespace IvySchool.Data.Repositories
                 throw new DBOperationException(ex);
             }
         }
+        #endregion
 
-       
+        #region SignInDb
+        public async Task AddSignIn(SigninHistoryDb signin)
+        {
+            _context.Add(signin);
+            try
+            {
+                await _context.SaveChangesAsync();
+   
+            }
+            catch (Exception ex)
+            {
+                throw new DBOperationException(ex);
+            }
+        }
+
+        #endregion
+
     }
 }

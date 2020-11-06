@@ -3,15 +3,17 @@ using System;
 using IvySchool.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IvySchool.Data.Migrations
 {
     [DbContext(typeof(IvySchoolContext))]
-    partial class IvySchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20201103104706_newtable")]
+    partial class newtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,14 +46,14 @@ namespace IvySchool.Data.Migrations
                     b.ToTable("RoleUsers");
                 });
 
-            modelBuilder.Entity("IvySchool.Data.Entities.SigninHistoryDb", b =>
+            modelBuilder.Entity("IvySchool.Data.Entities.SignInDb", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("SigninIp");
+                    b.Property<string>("SignIn");
 
-                    b.Property<DateTime>("SigninTime");
+                    b.Property<DateTime>("SignInTime");
 
                     b.Property<int>("userId");
 
@@ -67,23 +69,11 @@ namespace IvySchool.Data.Migrations
                     b.Property<int>("StudentId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Avatar");
-
-                    b.Property<string>("City");
-
-                    b.Property<string>("Mobile");
-
                     b.Property<string>("Notes");
 
                     b.Property<int>("NumberOfLogins");
 
-                    b.Property<string>("School");
-
                     b.Property<string>("SignUpSource");
-
-                    b.Property<string>("Title");
 
                     b.Property<int>("UserId");
 
@@ -108,6 +98,8 @@ namespace IvySchool.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<DateTime>("LastLoggedin");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
@@ -131,7 +123,7 @@ namespace IvySchool.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("IvySchool.Data.Entities.SigninHistoryDb", b =>
+            modelBuilder.Entity("IvySchool.Data.Entities.SignInDb", b =>
                 {
                     b.HasOne("IvySchool.Data.Entities.UserDb", "user")
                         .WithMany("SignIns")

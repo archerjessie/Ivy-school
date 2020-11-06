@@ -52,7 +52,7 @@ namespace IvySchool.Domain.Services
                     {
                         return SimpleResponse.Error("User already exists.");
                     }
-                    await _ivySchoolRepository.AssignRoleToUser(user1, roleId);
+                    await _ivySchoolRepository.AssignRoleToUser(user1, role);
                 }
                 else
                 {
@@ -63,6 +63,7 @@ namespace IvySchool.Domain.Services
                         Password = password,
                         CreateAt = DateTime.Now,
                         IsDeleted = false,
+
                     };
                     await _ivySchoolRepository.CreateUserAsync(user2, role);
                 }
@@ -91,7 +92,7 @@ namespace IvySchool.Domain.Services
             }
         }
 
-        public async Task<ObjectResponse<User>> LoginUserAsync(string email, string password)
+        public async Task<ObjectResponse<User>> LoginUserAsync(string email, string password,string signinIp)
         {
 
             UserDb user = await _ivySchoolRepository.GetAllActiveUsers().FirstOrDefaultAsync(e => e.Email == email && e.Password == password);
@@ -99,11 +100,28 @@ namespace IvySchool.Domain.Services
             {
                 return ObjectResponse<User>.Error("The user does not exist.");
             }
-            return ObjectResponse<User>.Success(new User(user.Email, user.Name, user.CreateAt, user.RoleUsers));
+            SigninHistoryDb signIn = new SigninHistoryDb()
+            {
+                SigninTime =DateTime.Now,
+                SigninIp=signinIp, 
+                userId=user.UserId,
+
+            };
+            try
+            {
+                await _ivySchoolRepository.AddSignIn(signIn);
+            }
+            catch (DBOperationException ex)
+            {
+                return ObjectResponse<User>.Error(ex.Message);
+            }
+
+            return ObjectResponse<User>.Success(user.ToUser());
+
 
         }
 
-        public async Task<ObjectResponse<IEnumerable<User>>> GetAdminRole()
+        public async Task<ObjectResponse<IEnumerable<User>>> GetAdministrators()
         {
             try
             {
@@ -118,6 +136,7 @@ namespace IvySchool.Domain.Services
                 return ObjectResponse<IEnumerable<User>>.Error(ex.Message);
             }
         }
+       
 
     }
 }
