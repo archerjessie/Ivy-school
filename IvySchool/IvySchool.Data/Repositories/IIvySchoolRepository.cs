@@ -16,7 +16,9 @@ namespace IvySchool.Data.Repositories
         Task AssignRoleToUser(UserDb user, RoleDb role);
         Task AddSignIn(SigninHistoryDb signin);
         IQueryable<StudentDb> GetStudents();
-
-
+        Task CreateCourse(CourseDb course);
+        Task StudentEnrollCourse(int studentId, int courseId);
+        Task<CourseDb> GetCourseById(int id);
+      
     }
 }

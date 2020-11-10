@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace IvySchool.Data.Entities
 {
     public class StudentDb
@@ -15,9 +17,8 @@ namespace IvySchool.Data.Entities
         public string Address { get; set; }
         public string Title { get; set; }
 
-
-
         public UserDb User { get; set; }
+        public List<CourseStudentDb> CourseStudents { get; set; }
         
     }
 }

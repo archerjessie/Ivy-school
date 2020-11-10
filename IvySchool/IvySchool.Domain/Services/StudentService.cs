@@ -35,7 +35,7 @@ namespace IvySchool.Domain.Services
         }
 
         public async Task<ObjectResponse<StudentDetail>> GetStudentDetail(int studentId)
-        {
+        { 
             try
             {
                 var student = await _ivySchoolRepository.GetStudents().FirstOrDefaultAsync();
@@ -80,17 +80,19 @@ namespace IvySchool.Domain.Services
 
             StudentDetail student = new StudentDetail()
             {
-              StudentId = studentDb.StudentId,
-              SignUpSource = studentDb.SignUpSource,
-              Notes = studentDb.Notes,
-              Avatar = studentDb.Avatar,
-              School = studentDb.School,
-              Mobile = studentDb.Mobile,
-              City = studentDb.City,
-              Address = studentDb.Address,
-              Title = studentDb.Title,
-              CurrentSigninIp = sortedSigninHistory.Count() > 0 ? sortedSigninHistory.TakeLast(1).FirstOrDefault().SigninIp : string.Empty,
-              LastSigninIp = sortedSigninHistory.Count() > 1 ? sortedSigninHistory.TakeLast(2).FirstOrDefault().SigninIp : string.Empty,
+                StudentId = studentDb.StudentId,
+                SignUpSource = studentDb.SignUpSource,
+                Notes = studentDb.Notes,
+                Avatar = studentDb.Avatar,
+                School = studentDb.School,
+                Mobile = studentDb.Mobile,
+                City = studentDb.City,
+                Address = studentDb.Address,
+                Title = studentDb.Title,
+                CurrentSigninIp = sortedSigninHistory.Count() > 0 ? sortedSigninHistory.TakeLast(1).FirstOrDefault().SigninIp : string.Empty,
+                LastSigninIp = sortedSigninHistory.Count() > 1 ? sortedSigninHistory.TakeLast(2).FirstOrDefault().SigninIp : string.Empty,
+                NumberOfLogins = studentDb.User.SignIns.Count,
+                
             };
             return student;
 

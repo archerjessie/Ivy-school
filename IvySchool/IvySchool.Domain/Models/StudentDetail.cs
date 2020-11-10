@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace IvySchool.Domain.Models
 {
     public class StudentDetail
@@ -14,6 +16,7 @@ namespace IvySchool.Domain.Models
         public string City { get; set; }
         public string Address { get; set; }
         public string Title { get; set; }
+        public List<CourseSummary> Courses { get; set; }
 
         public string CurrentSigninIp { get; set; }
         public string LastSigninIp { get; set; }

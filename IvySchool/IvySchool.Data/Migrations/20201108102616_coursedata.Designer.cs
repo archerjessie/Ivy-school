@@ -3,15 +3,17 @@ using System;
 using IvySchool.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IvySchool.Data.Migrations
 {
     [DbContext(typeof(IvySchoolContext))]
-    partial class IvySchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20201108102616_coursedata")]
+    partial class coursedata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,7 +77,7 @@ namespace IvySchool.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("CourseStudents");
+                    b.ToTable("CourseStudentDb");
                 });
 
             modelBuilder.Entity("IvySchool.Data.Entities.RoleDb", b =>

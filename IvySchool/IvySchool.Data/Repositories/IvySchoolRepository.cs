@@ -48,6 +48,7 @@ namespace IvySchool.Data.Repositories
                 .Where(u => u.User != null && !u.User.IsDeleted);
         }
 
+
         public async Task<RoleDb> GetRoleById(int roleId)
         {
             return await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == roleId);
@@ -132,6 +133,59 @@ namespace IvySchool.Data.Repositories
         }
 
         #endregion
+
+        #region CourseDb
+        public async Task CreateCourse(CourseDb course)
+        {
+
+            CourseStudentDb courseStudent = new CourseStudentDb()
+            {
+                Course = course,
+            };
+            _context.Add(course);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new DBOperationException(ex);
+            }
+        }
+
+        public async Task StudentEnrollCourse(int studentId, int courseId)
+        {
+
+            CourseStudentDb courseStudent = new CourseStudentDb()
+            {
+                StudentId = studentId,
+                CourseId = courseId,
+            };
+            if(_context.CourseStudents.Any(x=>x.CourseId==courseId && x.StudentId==studentId))
+            {
+                return;
+            }
+            _context.Add(courseStudent);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new DBOperationException(ex);
+            }
+        }
+
+        public async Task<CourseDb> GetCourseById(int id)
+        {
+            return await _context.Courses.Include(C=>C.CourseStudents).FirstOrDefaultAsync(x => x.Id== id);
+            
+        }
+
+        #endregion 
 
     }
 }
